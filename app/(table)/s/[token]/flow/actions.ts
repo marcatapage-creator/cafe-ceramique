@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { generateCeramicToken } from '@/lib/tokens'
+import { sendEmail, buildTokenEmail } from '@/lib/email'
 
 interface SubmitFlowInput {
   sessionId: string
@@ -82,6 +83,22 @@ export async function submitFlow(input: SubmitFlowInput): Promise<SubmitFlowResu
         total,
         status: 'pending',
       })
+    }
+
+    // Email de confirmation token (non-bloquant)
+    if (input.client.email && !input.client.email.includes('@local')) {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+      const orderSummary = input.orderItems
+        .map(i => `${i.name}${i.qty > 1 ? ` ×${i.qty}` : ''}`)
+        .join(', ')
+      const { subject, html } = buildTokenEmail({
+        firstName: input.client.firstName,
+        token: ceramicToken,
+        pieceName: input.piece.name,
+        orderSummary,
+        trackingUrl: `${appUrl}/suivi/${ceramicToken}`,
+      })
+      await sendEmail({ to: input.client.email, subject, html })
     }
 
     return { token: ceramicToken }

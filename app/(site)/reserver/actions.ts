@@ -1,6 +1,9 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { sendEmail, buildReservationEmail } from '@/lib/email'
+import { format, parseISO } from 'date-fns'
+import { fr } from 'date-fns/locale'
 
 interface CreateReservationInput {
   firstName: string
@@ -63,6 +66,17 @@ export async function createReservation(
 
     // 3. Mettre à jour le last_name (non géré dans le schéma client actuel — champ optionnel)
     // TODO Sprint suivant : ajouter last_name sur clients
+
+    // Email de confirmation (non-bloquant)
+    const startsAtDate = parseISO(input.startsAt)
+    const { subject, html } = buildReservationEmail({
+      firstName: input.firstName,
+      date: format(startsAtDate, 'EEEE d MMMM yyyy', { locale: fr }),
+      time: format(startsAtDate, 'HH\'h\'mm'),
+      nbParticipants: input.nbParticipants,
+      cancelToken: reservation.cancel_token,
+    })
+    await sendEmail({ to: input.email, subject, html })
 
     return {
       reservationId: reservation.id,
