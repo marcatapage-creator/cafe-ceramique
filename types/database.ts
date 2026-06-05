@@ -40,15 +40,14 @@ export type Database = {
           created_at: string
           fired_at: string | null
           firing_batch_id: string | null
+          group_session_id: string
           id: string
           painted_at: string
           piece_name: string | null
           piece_price: number | null
           queued_at: string | null
           ready_at: string | null
-          session_id: string
           status: string
-          table_group_id: string | null
           token: string
         }
         Insert: {
@@ -57,15 +56,14 @@ export type Database = {
           created_at?: string
           fired_at?: string | null
           firing_batch_id?: string | null
+          group_session_id: string
           id?: string
           painted_at?: string
           piece_name?: string | null
           piece_price?: number | null
           queued_at?: string | null
           ready_at?: string | null
-          session_id: string
           status?: string
-          table_group_id?: string | null
           token: string
         }
         Update: {
@@ -74,15 +72,14 @@ export type Database = {
           created_at?: string
           fired_at?: string | null
           firing_batch_id?: string | null
+          group_session_id?: string
           id?: string
           painted_at?: string
           piece_name?: string | null
           piece_price?: number | null
           queued_at?: string | null
           ready_at?: string | null
-          session_id?: string
           status?: string
-          table_group_id?: string | null
           token?: string
         }
         Relationships: [
@@ -101,17 +98,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "ceramic_pieces_session_id_fkey"
-            columns: ["session_id"]
+            foreignKeyName: "ceramic_pieces_group_session_id_fkey"
+            columns: ["group_session_id"]
             isOneToOne: false
-            referencedRelation: "sessions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ceramic_pieces_table_group_id_fkey"
-            columns: ["table_group_id"]
-            isOneToOne: false
-            referencedRelation: "table_groups"
+            referencedRelation: "group_sessions"
             referencedColumns: ["id"]
           },
         ]
@@ -122,7 +112,9 @@ export type Database = {
           email: string
           first_name: string
           id: string
+          last_name: string | null
           phone: string | null
+          stripe_customer_id: string | null
           updated_at: string
         }
         Insert: {
@@ -130,7 +122,9 @@ export type Database = {
           email: string
           first_name: string
           id?: string
+          last_name?: string | null
           phone?: string | null
+          stripe_customer_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -138,8 +132,28 @@ export type Database = {
           email?: string
           first_name?: string
           id?: string
+          last_name?: string | null
           phone?: string | null
+          stripe_customer_id?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      closed_dates: {
+        Row: {
+          date: string
+          id: string
+          reason: string | null
+        }
+        Insert: {
+          date: string
+          id?: string
+          reason?: string | null
+        }
+        Update: {
+          date?: string
+          id?: string
+          reason?: string | null
         }
         Relationships: []
       }
@@ -169,6 +183,102 @@ export type Database = {
           label?: string
           notes?: string | null
           planned_date?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
+      group_session_reservations: {
+        Row: {
+          group_session_id: string
+          reservation_id: string
+        }
+        Insert: {
+          group_session_id: string
+          reservation_id: string
+        }
+        Update: {
+          group_session_id?: string
+          reservation_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_session_reservations_group_session_id_fkey"
+            columns: ["group_session_id"]
+            isOneToOne: false
+            referencedRelation: "group_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_session_reservations_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_session_tables: {
+        Row: {
+          group_session_id: string
+          physical_table_id: number
+        }
+        Insert: {
+          group_session_id: string
+          physical_table_id: number
+        }
+        Update: {
+          group_session_id?: string
+          physical_table_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_session_tables_group_session_id_fkey"
+            columns: ["group_session_id"]
+            isOneToOne: false
+            referencedRelation: "group_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_session_tables_physical_table_id_fkey"
+            columns: ["physical_table_id"]
+            isOneToOne: false
+            referencedRelation: "physical_tables"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_sessions: {
+        Row: {
+          closed_at: string | null
+          created_at: string
+          ends_at: string | null
+          id: string
+          nb_participants: number
+          notes: string | null
+          qr_token: string
+          starts_at: string
+          status: string
+        }
+        Insert: {
+          closed_at?: string | null
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          nb_participants?: number
+          notes?: string | null
+          qr_token?: string
+          starts_at: string
+          status?: string
+        }
+        Update: {
+          closed_at?: string | null
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          nb_participants?: number
+          notes?: string | null
+          qr_token?: string
+          starts_at?: string
           status?: string
         }
         Relationships: []
@@ -211,41 +321,62 @@ export type Database = {
           },
         ]
       }
+      opening_hours: {
+        Row: {
+          closes_at: string
+          day_of_week: number
+          id: string
+          is_active: boolean
+          opens_at: string
+        }
+        Insert: {
+          closes_at: string
+          day_of_week: number
+          id?: string
+          is_active?: boolean
+          opens_at: string
+        }
+        Update: {
+          closes_at?: string
+          day_of_week?: number
+          id?: string
+          is_active?: boolean
+          opens_at?: string
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           client_id: string
+          group_session_id: string
           id: string
           items: Json
           notes: string | null
           ordered_at: string
           served_at: string | null
-          session_id: string
           status: string
-          table_group_id: string | null
           total: number
         }
         Insert: {
           client_id: string
+          group_session_id: string
           id?: string
           items?: Json
           notes?: string | null
           ordered_at?: string
           served_at?: string | null
-          session_id: string
           status?: string
-          table_group_id?: string | null
           total?: number
         }
         Update: {
           client_id?: string
+          group_session_id?: string
           id?: string
           items?: Json
           notes?: string | null
           ordered_at?: string
           served_at?: string | null
-          session_id?: string
           status?: string
-          table_group_id?: string | null
           total?: number
         }
         Relationships: [
@@ -257,17 +388,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "orders_session_id_fkey"
-            columns: ["session_id"]
+            foreignKeyName: "orders_group_session_id_fkey"
+            columns: ["group_session_id"]
             isOneToOne: false
-            referencedRelation: "sessions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "orders_table_group_id_fkey"
-            columns: ["table_group_id"]
-            isOneToOne: false
-            referencedRelation: "table_groups"
+            referencedRelation: "group_sessions"
             referencedColumns: ["id"]
           },
         ]
@@ -279,7 +403,6 @@ export type Database = {
           label: string
           pos_x: number | null
           pos_y: number | null
-          qr_url: string | null
           seats: number
         }
         Insert: {
@@ -288,7 +411,6 @@ export type Database = {
           label: string
           pos_x?: number | null
           pos_y?: number | null
-          qr_url?: string | null
           seats?: number
         }
         Update: {
@@ -297,47 +419,52 @@ export type Database = {
           label?: string
           pos_x?: number | null
           pos_y?: number | null
-          qr_url?: string | null
           seats?: number
         }
         Relationships: []
       }
       reservations: {
         Row: {
+          cancel_token: string
+          cancellation_fee_charged: boolean
           cancelled_at: string | null
           client_id: string
-          confirmed_at: string | null
           created_at: string
+          ends_at: string | null
           id: string
           nb_participants: number
           notes: string | null
-          session_id: string
+          starts_at: string
           status: string
-          table_group_id: string | null
+          stripe_payment_method_id: string | null
         }
         Insert: {
+          cancel_token?: string
+          cancellation_fee_charged?: boolean
           cancelled_at?: string | null
           client_id: string
-          confirmed_at?: string | null
           created_at?: string
+          ends_at?: string | null
           id?: string
           nb_participants: number
           notes?: string | null
-          session_id: string
+          starts_at: string
           status?: string
-          table_group_id?: string | null
+          stripe_payment_method_id?: string | null
         }
         Update: {
+          cancel_token?: string
+          cancellation_fee_charged?: boolean
           cancelled_at?: string | null
           client_id?: string
-          confirmed_at?: string | null
           created_at?: string
+          ends_at?: string | null
           id?: string
           nb_participants?: number
           notes?: string | null
-          session_id?: string
+          starts_at?: string
           status?: string
-          table_group_id?: string | null
+          stripe_payment_method_id?: string | null
         }
         Relationships: [
           {
@@ -347,128 +474,6 @@ export type Database = {
             referencedRelation: "clients"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "reservations_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "sessions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reservations_table_group_id_fkey"
-            columns: ["table_group_id"]
-            isOneToOne: false
-            referencedRelation: "table_groups"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      sessions: {
-        Row: {
-          capacity: number
-          created_at: string
-          date: string
-          end_time: string
-          id: string
-          is_active: boolean
-          start_time: string
-          status: string
-        }
-        Insert: {
-          capacity?: number
-          created_at?: string
-          date: string
-          end_time: string
-          id?: string
-          is_active?: boolean
-          start_time: string
-          status?: string
-        }
-        Update: {
-          capacity?: number
-          created_at?: string
-          date?: string
-          end_time?: string
-          id?: string
-          is_active?: boolean
-          start_time?: string
-          status?: string
-        }
-        Relationships: []
-      }
-      table_group_members: {
-        Row: {
-          physical_table_id: number
-          table_group_id: string
-        }
-        Insert: {
-          physical_table_id: number
-          table_group_id: string
-        }
-        Update: {
-          physical_table_id?: number
-          table_group_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "table_group_members_physical_table_id_fkey"
-            columns: ["physical_table_id"]
-            isOneToOne: false
-            referencedRelation: "physical_tables"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "table_group_members_table_group_id_fkey"
-            columns: ["table_group_id"]
-            isOneToOne: false
-            referencedRelation: "table_groups"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      table_groups: {
-        Row: {
-          created_at: string
-          id: string
-          label: string
-          qr_code_slug: string | null
-          qr_code_url: string | null
-          reference_table: number
-          session_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          label: string
-          qr_code_slug?: string | null
-          qr_code_url?: string | null
-          reference_table: number
-          session_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          label?: string
-          qr_code_slug?: string | null
-          qr_code_url?: string | null
-          reference_table?: number
-          session_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "table_groups_reference_table_fkey"
-            columns: ["reference_table"]
-            isOneToOne: false
-            referencedRelation: "physical_tables"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "table_groups_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "sessions"
-            referencedColumns: ["id"]
-          },
         ]
       }
     }
@@ -476,24 +481,27 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cancel_reservation: { Args: { p_cancel_token: string }; Returns: Json }
       create_reservation: {
         Args: {
           p_client_id: string
           p_nb_participants: number
           p_notes?: string
-          p_session_id: string
+          p_starts_at: string
         }
         Returns: {
+          cancel_token: string
+          cancellation_fee_charged: boolean
           cancelled_at: string | null
           client_id: string
-          confirmed_at: string | null
           created_at: string
+          ends_at: string | null
           id: string
           nb_participants: number
           notes: string | null
-          session_id: string
+          starts_at: string
           status: string
-          table_group_id: string | null
+          stripe_payment_method_id: string | null
         }
         SetofOptions: {
           from: "*"
@@ -502,6 +510,16 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      get_available_slots: {
+        Args: { p_date: string }
+        Returns: {
+          available_seats: number
+          is_available: boolean
+          slot_start: string
+          slot_time_label: string
+        }[]
+      }
+      get_group_session_by_token: { Args: { p_token: string }; Returns: Json }
       get_piece_by_token: {
         Args: { p_token: string }
         Returns: {
@@ -516,12 +534,6 @@ export type Database = {
           token: string
         }[]
       }
-      get_session_available_seats: {
-        Args: { p_session_id: string }
-        Returns: number
-      }
-      get_table_page_state: { Args: { p_table_id: number }; Returns: Json }
-      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
@@ -652,21 +664,23 @@ export const Constants = {
 
 // ============================================================
 // Types utilitaires — régénérer après chaque migration :
-// npm exec -- supabase gen types typescript --local > types/database.ts
+// npm exec -- supabase gen types typescript --local 2>/dev/null | grep -v "^Connecting\|^A new\|^We recommend" > types/database.ts
 // ============================================================
 
-export type Client      = Database['public']['Tables']['clients']['Row']
-export type Session     = Database['public']['Tables']['sessions']['Row']
-export type PhysicalTable = Database['public']['Tables']['physical_tables']['Row']
-export type TableGroup  = Database['public']['Tables']['table_groups']['Row']
-export type Reservation = Database['public']['Tables']['reservations']['Row']
-export type CeramicPiece = Database['public']['Tables']['ceramic_pieces']['Row']
-export type FiringBatch = Database['public']['Tables']['firing_batches']['Row']
-export type Order       = Database['public']['Tables']['orders']['Row']
+export type Client         = Database['public']['Tables']['clients']['Row']
+export type PhysicalTable  = Database['public']['Tables']['physical_tables']['Row']
+export type OpeningHours   = Database['public']['Tables']['opening_hours']['Row']
+export type ClosedDate     = Database['public']['Tables']['closed_dates']['Row']
+export type Reservation    = Database['public']['Tables']['reservations']['Row']
+export type GroupSession   = Database['public']['Tables']['group_sessions']['Row']
+export type CeramicPiece   = Database['public']['Tables']['ceramic_pieces']['Row']
+export type FiringBatch    = Database['public']['Tables']['firing_batches']['Row']
+export type Order          = Database['public']['Tables']['orders']['Row']
 
-export type PieceStatus   = 'painted' | 'queued' | 'firing' | 'ready' | 'collected'
-export type SessionStatus = 'scheduled' | 'active' | 'closed'
-export type TablePageState = 'active' | 'waiting'
+export type ReservationStatus = 'pending' | 'confirmed' | 'cancelled' | 'no_show'
+export type GroupSessionStatus = 'active' | 'closed'
+export type PieceStatus = 'painted' | 'queued' | 'firing' | 'ready' | 'collected'
+export type OrderStatus = 'pending' | 'served' | 'cancelled'
 
 export interface OrderItem {
   name: string
@@ -674,8 +688,16 @@ export interface OrderItem {
   qty: number
 }
 
-export interface TablePageStateResult {
-  state: TablePageState
-  session: Session | null
-  next_session: Session | null
+export interface AvailableSlot {
+  slot_start: string
+  slot_time_label: string
+  available_seats: number
+  is_available: boolean
+}
+
+export interface GroupSessionWithTables {
+  found: boolean
+  expired?: boolean
+  session?: GroupSession
+  tables?: Array<{ id: number; label: string; seats: number }>
 }

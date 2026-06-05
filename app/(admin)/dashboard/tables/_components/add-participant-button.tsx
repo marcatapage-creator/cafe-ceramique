@@ -47,16 +47,20 @@ export function AddParticipantButton({ tableId, tableLabel }: Props) {
 
     const supabase = createClient()
 
-    // 1. Session active
-    const { data: rawState } = await supabase.rpc('get_table_page_state', { p_table_id: tableId })
-    type RpcState = { state: string; session: { id: string; date: string } | null }
-    const stateData = rawState as unknown as RpcState | null
-    if (!stateData || stateData.state !== 'active') {
+    // 1. Session active sur cette table
+    const { data: sessionRows } = await supabase
+      .from('group_sessions')
+      .select('id, starts_at, qr_token, group_session_tables!inner(physical_table_id)')
+      .eq('status', 'active')
+      .eq('group_session_tables.physical_table_id', tableId)
+      .limit(1)
+
+    const session = sessionRows?.[0] ?? null
+    if (!session) {
       setError('Aucune session active sur cette table.')
       setLoading(false)
       return
     }
-    const session = stateData.session!
 
     // 2. Upsert client
     const { data: client, error: clientErr } = await supabase
@@ -75,7 +79,7 @@ export function AddParticipantButton({ tableId, tableLabel }: Props) {
     }
 
     // 3. Générer token
-    const sessionDate = new Date(session.date)
+    const sessionDate = new Date(session.starts_at)
     const { count: existingCount } = await supabase
       .from('ceramic_pieces')
       .select('*', { count: 'exact', head: true })
@@ -87,7 +91,7 @@ export function AddParticipantButton({ tableId, tableLabel }: Props) {
     const { error: pieceErr } = await supabase.from('ceramic_pieces').insert({
       token,
       client_id: client.id,
-      session_id: session.id,
+      group_session_id: session.id,
       piece_name: data.piece_name,
       status: 'painted',
     })
@@ -102,7 +106,7 @@ export function AddParticipantButton({ tableId, tableLabel }: Props) {
     if (data.order_notes) {
       await supabase.from('orders').insert({
         client_id: client.id,
-        session_id: session.id,
+        group_session_id: session.id,
         items: [],
         total: 0,
         notes: data.order_notes,
