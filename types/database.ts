@@ -5,6 +5,7 @@ export type Json =
   | null
   | { [key: string]: Json | undefined }
   | Json[]
+
 export type Database = {
   graphql_public: {
     Tables: {
@@ -33,6 +34,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      catalog_pieces: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_available: boolean
+          name: string
+          photo_url: string | null
+          price: number
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_available?: boolean
+          name: string
+          photo_url?: string | null
+          price: number
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_available?: boolean
+          name?: string
+          photo_url?: string | null
+          price?: number
+          sort_order?: number
+        }
+        Relationships: []
+      }
       ceramic_pieces: {
         Row: {
           client_id: string
@@ -280,6 +314,42 @@ export type Database = {
           qr_token?: string
           starts_at?: string
           status?: string
+        }
+        Relationships: []
+      }
+      menu_items: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          is_available: boolean
+          name: string
+          photo_url: string | null
+          price: number
+          sort_order: number
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_available?: boolean
+          name: string
+          photo_url?: string | null
+          price: number
+          sort_order?: number
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_available?: boolean
+          name?: string
+          photo_url?: string | null
+          price?: number
+          sort_order?: number
         }
         Relationships: []
       }
@@ -543,8 +613,11 @@ export type Database = {
     }
   }
 }
+
 type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
 type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
@@ -573,6 +646,7 @@ export type Tables<
       ? R
       : never
     : never
+
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
@@ -597,6 +671,7 @@ export type TablesInsert<
       ? I
       : never
     : never
+
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
@@ -621,6 +696,7 @@ export type TablesUpdate<
       ? U
       : never
     : never
+
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
@@ -637,6 +713,7 @@ export type Enums<
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
+
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
@@ -653,6 +730,7 @@ export type CompositeTypes<
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
+
 export const Constants = {
   graphql_public: {
     Enums: {},
@@ -662,42 +740,33 @@ export const Constants = {
   },
 } as const
 
+
 // ============================================================
-// Types utilitaires — régénérer après chaque migration :
+// Régénérer après migration :
 // npm exec -- supabase gen types typescript --local 2>/dev/null | grep -v "^Connecting\|^A new\|^We recommend" > types/database.ts
 // ============================================================
-
 export type Client         = Database['public']['Tables']['clients']['Row']
 export type PhysicalTable  = Database['public']['Tables']['physical_tables']['Row']
 export type OpeningHours   = Database['public']['Tables']['opening_hours']['Row']
-export type ClosedDate     = Database['public']['Tables']['closed_dates']['Row']
 export type Reservation    = Database['public']['Tables']['reservations']['Row']
 export type GroupSession   = Database['public']['Tables']['group_sessions']['Row']
 export type CeramicPiece   = Database['public']['Tables']['ceramic_pieces']['Row']
 export type FiringBatch    = Database['public']['Tables']['firing_batches']['Row']
 export type Order          = Database['public']['Tables']['orders']['Row']
+export type CatalogPiece   = Database['public']['Tables']['catalog_pieces']['Row']
+export type MenuItem       = Database['public']['Tables']['menu_items']['Row']
 
-export type ReservationStatus = 'pending' | 'confirmed' | 'cancelled' | 'no_show'
+export type PieceStatus      = 'painted' | 'queued' | 'firing' | 'ready' | 'collected'
 export type GroupSessionStatus = 'active' | 'closed'
-export type PieceStatus = 'painted' | 'queued' | 'firing' | 'ready' | 'collected'
-export type OrderStatus = 'pending' | 'served' | 'cancelled'
+export type ReservationStatus  = 'pending' | 'confirmed' | 'cancelled' | 'no_show'
 
-export interface OrderItem {
-  name: string
-  price: number
-  qty: number
-}
-
+export interface OrderItem { name: string; price: number; qty: number }
 export interface AvailableSlot {
-  slot_start: string
-  slot_time_label: string
-  available_seats: number
-  is_available: boolean
+  slot_start: string; slot_time_label: string
+  available_seats: number; is_available: boolean
 }
-
 export interface GroupSessionWithTables {
-  found: boolean
-  expired?: boolean
+  found: boolean; expired?: boolean
   session?: GroupSession
   tables?: Array<{ id: number; label: string; seats: number }>
 }
