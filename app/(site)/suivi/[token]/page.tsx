@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { PieceTracker } from './_components/piece-tracker'
 import { notFound } from 'next/navigation'
+import type { PieceStatus } from '@/types/database'
 
 interface PageProps {
   params: Promise<{ token: string }>
@@ -23,8 +24,7 @@ export default async function SuiviPage({ params }: PageProps) {
 
   if (!raw) notFound()
 
-  // Le RPC retourne status comme string — on caste au type précis
-  const piece = raw as typeof raw & { status: import('@/types/database').PieceStatus }
+  const piece = { ...raw, status: raw.status as PieceStatus }
 
   return <PieceTracker piece={piece} token={token} />
 }
