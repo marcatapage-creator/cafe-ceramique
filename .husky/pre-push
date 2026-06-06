@@ -1,0 +1,80 @@
+#!/bin/sh
+# Quality gate — bloque le push si les signaux objectifs régressent
+
+PASS=0
+FAIL=0
+WARNINGS=""
+
+echo "🔍 Quality gate en cours..."
+
+# ── 1. TypeScript ───────────────────────────────────────────────────────────
+TS_ERRORS=$(npx tsc --noEmit 2>&1 | grep -c "error TS" || true)
+if [ "$TS_ERRORS" -gt 0 ]; then
+  FAIL=$((FAIL + 1))
+  WARNINGS="${WARNINGS}\n  🔴 TypeScript : ${TS_ERRORS} erreur(s)"
+else
+  PASS=$((PASS + 1))
+fi
+
+# ── 2. Tests ────────────────────────────────────────────────────────────────
+TEST_RESULT=$(./node_modules/.bin/vitest run 2>&1 | tail -4)
+if echo "$TEST_RESULT" | grep -q "FAIL\|failed"; then
+  FAIL=$((FAIL + 1))
+  WARNINGS="${WARNINGS}\n  🔴 Tests : échec détecté"
+else
+  PASS=$((PASS + 1))
+fi
+
+# ── 3. Auth guard dans les actions admin ────────────────────────────────────
+# Seules les actions sous (admin)/ doivent avoir requireAdmin
+# Les actions (table)/ et (site)/ sont publiques par conception
+ADMIN_WITHOUT_GUARD=$(grep -rL "requireAdmin" "app/(admin)" --include="actions.ts" 2>/dev/null | wc -l | tr -d ' ')
+if [ "$ADMIN_WITHOUT_GUARD" -gt 0 ]; then
+  FAIL=$((FAIL + 1))
+  WARNINGS="${WARNINGS}\n  🔴 Sécurité : ${ADMIN_WITHOUT_GUARD} action(s) admin sans requireAdmin"
+  grep -rL "requireAdmin" "app/(admin)" --include="actions.ts" 2>/dev/null | while read f; do
+    WARNINGS="${WARNINGS}\n     └ ${f}"
+  done
+else
+  PASS=$((PASS + 1))
+fi
+
+# ── 4. Zod dans les actions admin ───────────────────────────────────────────
+ADMIN_WITHOUT_ZOD=$(grep -rL "lib/validation/schemas" "app/(admin)" --include="actions.ts" 2>/dev/null | wc -l | tr -d ' ')
+if [ "$ADMIN_WITHOUT_ZOD" -gt 0 ]; then
+  FAIL=$((FAIL + 1))
+  WARNINGS="${WARNINGS}\n  🔴 Validation : ${ADMIN_WITHOUT_ZOD} action(s) admin sans schéma Zod"
+  grep -rL "lib/validation/schemas" "app/(admin)" --include="actions.ts" 2>/dev/null | while read f; do
+    WARNINGS="${WARNINGS}\n     └ ${f}"
+  done
+else
+  PASS=$((PASS + 1))
+fi
+
+# ── 5. Error boundaries ─────────────────────────────────────────────────────
+ERROR_BOUNDARIES=$(find app -name "error.tsx" | grep -v node_modules | wc -l | tr -d ' ')
+if [ "$ERROR_BOUNDARIES" -lt 2 ]; then
+  FAIL=$((FAIL + 1))
+  WARNINGS="${WARNINGS}\n  🔴 Robustesse : seulement ${ERROR_BOUNDARIES} error.tsx (minimum 2)"
+else
+  PASS=$((PASS + 1))
+fi
+
+# ── Rapport ─────────────────────────────────────────────────────────────────
+echo ""
+echo "  ✅ Checks OK   : ${PASS}"
+echo "  🔴 Checks KO   : ${FAIL}"
+
+if [ "$FAIL" -gt 0 ]; then
+  echo ""
+  printf "${WARNINGS}\n"
+  echo ""
+  echo "  ⚠️  Quality gate échoué — corrige les points ci-dessus ou lance /quality-check pour l'audit complet."
+  echo "  Pour forcer quand même : git push --no-verify"
+  echo ""
+  exit 1
+fi
+
+echo ""
+echo "  ✅ Quality gate OK — push autorisé."
+echo ""
