@@ -127,7 +127,7 @@ export function AddParticipantButton({ tableId, tableLabel }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="text-xs text-[#C17F24] hover:underline mt-1 bg-transparent border-0 p-0 cursor-pointer">
+      <DialogTrigger className="text-xs text-gray-900 hover:underline mt-1 bg-transparent border-0 p-0 cursor-pointer">
         + Sans mobile
       </DialogTrigger>
       <DialogContent className="max-w-sm">
@@ -138,11 +138,11 @@ export function AddParticipantButton({ tableId, tableLabel }: Props) {
         {generatedToken ? (
           <div className="space-y-4 text-center py-4">
             <div className="text-4xl">✅</div>
-            <p className="text-[#3D2B1F] font-semibold">Token généré</p>
-            <p className="text-2xl font-mono font-bold text-[#C17F24] bg-[#F5F0E8] py-3 rounded-lg">
+            <p className="text-gray-900 font-semibold">Token généré</p>
+            <p className="text-2xl font-mono font-bold text-gray-900 bg-gray-50 py-3 rounded-lg">
               {generatedToken}
             </p>
-            <p className="text-sm text-[#6B5344]">
+            <p className="text-sm text-gray-500">
               Notez ce token sur la fiche du participant.
             </p>
             <Button onClick={handleClose} className="w-full">Fermer</Button>
@@ -156,10 +156,10 @@ export function AddParticipantButton({ tableId, tableLabel }: Props) {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="email">Email <span className="text-[#8B8080]">(optionnel)</span></Label>
+              <Label htmlFor="email">Email <span className="text-gray-400">(optionnel)</span></Label>
               <Input id="email" type="email" {...register('email')} placeholder="marie@email.com" />
               {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
-              <p className="text-xs text-[#8B8080]">Si renseigné, la confirmation sera envoyée par email.</p>
+              <p className="text-xs text-gray-400">Si renseigné, la confirmation sera envoyée par email.</p>
             </div>
 
             <div className="space-y-1.5">
@@ -181,7 +181,7 @@ export function AddParticipantButton({ tableId, tableLabel }: Props) {
               </Button>
               <Button
                 type="submit"
-                className="flex-1 bg-[#C17F24] hover:bg-[#A66A1A]"
+                className="flex-1 bg-black hover:bg-gray-800"
                 disabled={loading}
               >
                 {loading ? 'Génération…' : 'Générer le token'}

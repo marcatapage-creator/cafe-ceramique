@@ -47,22 +47,22 @@ export function FlowWizard({ sessionToken, session, tables, pieces, drinks }: Pr
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F0E8] flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       {/* Header */}
-      <div className="bg-white/80 px-4 py-3 flex items-center gap-3 sticky top-0 z-10 shadow-sm">
-        <span className="text-sm font-medium text-[#8B6914]">{tableLabel}</span>
+      <div className="bg-white px-4 py-3 flex items-center gap-3 sticky top-0 z-10 border-b border-gray-100">
+        <span className="text-sm font-medium text-gray-500">{tableLabel}</span>
         <div className="flex-1" />
         <div className="flex gap-1">
           {steps.map(s => (
             <div key={s.n} className="flex flex-col items-center gap-0.5">
               <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
-                step === s.n ? 'bg-[#C17F24] text-white' :
-                step > s.n  ? 'bg-[#C17F24]/30 text-[#C17F24]' :
-                              'bg-[#E8DDD0] text-[#8B8080]'
+                step === s.n ? 'bg-black text-white' :
+                step > s.n  ? 'bg-gray-200 text-gray-600' :
+                              'bg-gray-100 text-gray-400'
               }`}>
                 {step > s.n ? '✓' : s.n}
               </div>
-              <span className="text-[9px] text-[#8B8080]">{s.label}</span>
+              <span className="text-[9px] text-gray-400">{s.label}</span>
             </div>
           ))}
         </div>

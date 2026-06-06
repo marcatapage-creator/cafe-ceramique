@@ -50,40 +50,40 @@ export function StepRecap({ data, session, referenceTableId, sessionToken, onDon
   return (
     <div className="p-6 space-y-6 max-w-sm mx-auto">
       <div>
-        <h2 className="text-xl font-bold text-[#3D2B1F]">Récapitulatif ✅</h2>
-        <p className="text-sm text-[#6B5344] mt-1">Tout est correct ?</p>
+        <h2 className="text-xl font-bold text-gray-900">Récapitulatif</h2>
+        <p className="text-sm text-gray-500 mt-1">Tout est correct ?</p>
       </div>
 
-      <div className="bg-white rounded-xl divide-y divide-[#F5F0E8]">
+      <div className="bg-white rounded-xl border border-gray-100 divide-y divide-gray-100">
         <div className="px-4 py-3">
-          <p className="text-xs text-[#8B8080] uppercase tracking-widest mb-0.5">Participant</p>
-          <p className="font-semibold text-[#3D2B1F]">{data.firstName}</p>
-          <p className="text-sm text-[#6B5344]">{data.email}</p>
+          <p className="text-xs text-gray-400 uppercase tracking-widest mb-0.5">Participant</p>
+          <p className="font-semibold text-gray-900">{data.firstName}</p>
+          <p className="text-sm text-gray-500">{data.email}</p>
         </div>
 
         <div className="px-4 py-3 flex justify-between items-center">
           <div>
-            <p className="text-xs text-[#8B8080] uppercase tracking-widest mb-0.5">Pièce céramique</p>
-            <p className="font-semibold text-[#3D2B1F]">{data.piece?.name}</p>
+            <p className="text-xs text-gray-400 uppercase tracking-widest mb-0.5">Pièce céramique</p>
+            <p className="font-semibold text-gray-900">{data.piece?.name}</p>
           </div>
-          <p className="font-bold text-[#C17F24]">{pieceTotal.toFixed(2)} €</p>
+          <p className="font-bold text-gray-900">{pieceTotal.toFixed(2)} €</p>
         </div>
 
         {data.orderItems.length > 0 && (
           <div className="px-4 py-3">
-            <p className="text-xs text-[#8B8080] uppercase tracking-widest mb-2">Commande</p>
+            <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">Commande</p>
             {data.orderItems.map(i => (
               <div key={i.item.id} className="flex justify-between text-sm py-0.5">
-                <span className="text-[#3D2B1F]">{i.item.name} × {i.qty}</span>
-                <span className="text-[#6B5344]">{(i.item.price * i.qty).toFixed(2)} €</span>
+                <span className="text-gray-900">{i.item.name} × {i.qty}</span>
+                <span className="text-gray-500">{(i.item.price * i.qty).toFixed(2)} €</span>
               </div>
             ))}
           </div>
         )}
 
         <div className="px-4 py-3 flex justify-between items-center">
-          <p className="font-semibold text-[#3D2B1F]">Total</p>
-          <p className="text-xl font-bold text-[#C17F24]">{grandTotal.toFixed(2)} €</p>
+          <p className="font-semibold text-gray-900">Total</p>
+          <p className="text-xl font-bold text-gray-900">{grandTotal.toFixed(2)} €</p>
         </div>
       </div>
 
@@ -97,13 +97,13 @@ export function StepRecap({ data, session, referenceTableId, sessionToken, onDon
           type="button"
           onClick={handleConfirm}
           disabled={loading}
-          className="flex-1 bg-[#C17F24] hover:bg-[#A66A1A]"
+          className="flex-1 bg-black hover:bg-gray-800"
         >
-          {loading ? 'Envoi…' : 'Valider 🎨'}
+          {loading ? 'Envoi…' : 'Valider'}
         </Button>
       </div>
 
-      <p className="text-xs text-center text-[#8B8080]">
+      <p className="text-xs text-center text-gray-400">
         Le paiement s&apos;effectue en fin de session.
       </p>
     </div>

@@ -3,6 +3,11 @@ import { cookies } from 'next/headers'
 import type { Database } from '@/types/database'
 
 export async function createClient() {
+  if (process.env.NEXT_PUBLIC_MOCK === 'true') {
+    const { createMockClient } = await import('@/lib/mock/client')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return createMockClient() as any
+  }
   const cookieStore = await cookies()
 
   return createServerClient<Database>(
@@ -28,6 +33,11 @@ export async function createClient() {
 }
 
 export async function createAdminClient() {
+  if (process.env.NEXT_PUBLIC_MOCK === 'true') {
+    const { createMockClient } = await import('@/lib/mock/client')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return createMockClient() as any
+  }
   const cookieStore = await cookies()
 
   return createServerClient<Database>(

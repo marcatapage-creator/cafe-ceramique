@@ -37,27 +37,27 @@ export function StepDrinks({ drinks, selected, onNext, onBack }: Props) {
   return (
     <div className="p-6 space-y-6 max-w-sm mx-auto">
       <div>
-        <h2 className="text-xl font-bold text-[#3D2B1F]">Boissons & snacks ☕</h2>
-        <p className="text-sm text-[#6B5344] mt-1">Ajoutez ce qui vous fait envie — facultatif.</p>
+        <h2 className="text-xl font-bold text-gray-900">Boissons & snacks</h2>
+        <p className="text-sm text-gray-500 mt-1">Ajoutez ce qui vous fait envie — facultatif.</p>
       </div>
 
       {[{ label: 'Boissons', list: drinksList }, { label: 'À grignoter', list: foodList }].map(
         ({ label, list }) => list.length > 0 && (
           <div key={label}>
-            <p className="text-xs font-semibold text-[#8B6914] uppercase tracking-widest mb-2">{label}</p>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">{label}</p>
             <div className="space-y-2">
               {list.map(item => (
-                <div key={item.id} className="flex items-center justify-between bg-white rounded-xl px-3 py-2.5">
+                <div key={item.id} className="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2.5">
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm text-[#3D2B1F] truncate">{item.name}</p>
-                    <p className="text-xs text-[#C17F24]">{item.price.toFixed(2)} €</p>
+                    <p className="font-medium text-sm text-gray-900 truncate">{item.name}</p>
+                    <p className="text-xs text-gray-500">{item.price.toFixed(2)} €</p>
                   </div>
                   <div className="flex items-center gap-2 ml-2">
                     <button
                       type="button"
                       onClick={() => adjust(item, -1)}
                       disabled={getQty(item.id) === 0}
-                      className="w-7 h-7 rounded-full border border-[#E8DDD0] flex items-center justify-center text-[#6B5344] disabled:opacity-30 hover:border-[#C17F24]"
+                      className="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 disabled:opacity-30 hover:border-black"
                     >
                       −
                     </button>
@@ -67,7 +67,7 @@ export function StepDrinks({ drinks, selected, onNext, onBack }: Props) {
                     <button
                       type="button"
                       onClick={() => adjust(item, 1)}
-                      className="w-7 h-7 rounded-full border border-[#E8DDD0] flex items-center justify-center text-[#6B5344] hover:border-[#C17F24]"
+                      className="w-7 h-7 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:border-black"
                     >
                       +
                     </button>
@@ -80,9 +80,9 @@ export function StepDrinks({ drinks, selected, onNext, onBack }: Props) {
       )}
 
       {total > 0 && (
-        <div className="bg-[#C17F24]/10 rounded-xl px-4 py-2 flex justify-between items-center">
-          <span className="text-sm text-[#6B5344]">Sous-total commande</span>
-          <span className="font-bold text-[#C17F24]">{total.toFixed(2)} €</span>
+        <div className="bg-gray-100 rounded-xl px-4 py-2 flex justify-between items-center">
+          <span className="text-sm text-gray-600">Sous-total commande</span>
+          <span className="font-bold text-gray-900">{total.toFixed(2)} €</span>
         </div>
       )}
 
@@ -91,7 +91,7 @@ export function StepDrinks({ drinks, selected, onNext, onBack }: Props) {
         <Button
           type="button"
           onClick={() => onNext(items)}
-          className="flex-1 bg-[#C17F24] hover:bg-[#A66A1A]"
+          className="flex-1 bg-black hover:bg-gray-800"
         >
           {items.length > 0 ? 'Continuer →' : 'Passer →'}
         </Button>

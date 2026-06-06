@@ -23,11 +23,11 @@ export default async function ReserverPage() {
   const closedDatesList = (closedDates ?? []).map((cd: { date: string }) => cd.date)
 
   return (
-    <div className="min-h-screen bg-[#F5F0E8]">
+    <div className="min-h-screen bg-white">
       <div className="max-w-lg mx-auto">
         <div className="px-6 pt-8 pb-4">
-          <h1 className="text-2xl font-bold text-[#3D2B1F]">Réserver une session</h1>
-          <p className="text-[#6B5344] text-sm mt-1">2h30 de peinture sur céramique · jusqu&apos;à 29 personnes</p>
+          <h1 className="text-2xl font-bold text-gray-900">Réserver une session</h1>
+          <p className="text-gray-500 text-sm mt-1">2h30 de peinture sur céramique · jusqu&apos;à 29 personnes</p>
         </div>
         <ReservationWizard openDays={openDays} closedDates={closedDatesList} />
       </div>

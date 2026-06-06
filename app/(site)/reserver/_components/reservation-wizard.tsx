@@ -9,9 +9,9 @@ import { StepConfirmed } from './step-confirmed'
 
 export interface ReservationState {
   nbParticipants: number
-  date: string | null           // 'YYYY-MM-DD'
-  slotStart: string | null      // TIMESTAMPTZ ISO
-  slotLabel: string | null      // 'HH:MM'
+  date: string | null
+  slotStart: string | null
+  slotLabel: string | null
   firstName: string
   lastName: string
   email: string
@@ -19,8 +19,8 @@ export interface ReservationState {
 }
 
 interface Props {
-  openDays: number[]            // 0-6 jours ouverts
-  closedDates: string[]         // dates fermées 'YYYY-MM-DD'
+  openDays: number[]
+  closedDates: string[]
 }
 
 const STEPS = [
@@ -48,24 +48,23 @@ export function ReservationWizard({ openDays, closedDates }: Props) {
 
   return (
     <div>
-      {/* Progress bar */}
       <div className="px-6 pb-6">
         <div className="flex items-center gap-1">
           {STEPS.map((s, i) => (
             <div key={s.n} className="flex items-center flex-1">
               <div className="flex flex-col items-center gap-1">
                 <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
-                  step === s.n ? 'bg-[#C17F24] text-white' :
-                  step > s.n   ? 'bg-[#C17F24]/25 text-[#C17F24]' :
-                                 'bg-[#E8DDD0] text-[#8B8080]'
+                  step === s.n ? 'bg-black text-white' :
+                  step > s.n   ? 'bg-gray-200 text-gray-600' :
+                                 'bg-gray-100 text-gray-400'
                 }`}>
                   {step > s.n ? '✓' : s.n}
                 </div>
-                <span className="text-[9px] text-[#8B8080] whitespace-nowrap">{s.label}</span>
+                <span className="text-[9px] text-gray-400 whitespace-nowrap">{s.label}</span>
               </div>
               {i < STEPS.length - 1 && (
                 <div className={`flex-1 h-0.5 mx-1 mb-4 rounded transition-colors ${
-                  step > s.n ? 'bg-[#C17F24]/40' : 'bg-[#E8DDD0]'
+                  step > s.n ? 'bg-gray-400' : 'bg-gray-200'
                 }`} />
               )}
             </div>

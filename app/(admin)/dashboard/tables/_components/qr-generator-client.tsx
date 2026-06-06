@@ -18,7 +18,7 @@ export function QrGeneratorClient({ tables, appUrl }: Props) {
     <>
       <Button
         onClick={handlePrint}
-        className="bg-[#C17F24] hover:bg-[#A66A1A] print:hidden"
+        className="bg-black hover:bg-gray-800 print:hidden"
       >
         Générer les QR codes PDF
       </Button>
@@ -40,7 +40,7 @@ export function QrGeneratorClient({ tables, appUrl }: Props) {
             <p style={{ fontSize: 28, fontWeight: 700, marginTop: 24, fontFamily: 'sans-serif' }}>
               {table.label}
             </p>
-            <p style={{ fontSize: 18, marginTop: 8, fontFamily: 'sans-serif', color: '#6B5344' }}>
+            <p style={{ fontSize: 18, marginTop: 8, fontFamily: 'sans-serif', color: '#555' }}>
               Scannez-moi 🎨
             </p>
           </div>

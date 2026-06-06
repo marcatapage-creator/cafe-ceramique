@@ -67,8 +67,8 @@ export function StepDetails({ initialData, state, onDone, onBack }: Props) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="px-6 space-y-6 pb-8">
       <div>
-        <h2 className="text-xl font-bold text-[#3D2B1F]">Vos coordonnées</h2>
-        <div className="mt-2 bg-white rounded-xl px-4 py-3 text-sm text-[#6B5344] flex flex-wrap gap-x-4 gap-y-1">
+        <h2 className="text-xl font-bold text-gray-900">Vos coordonnées</h2>
+        <div className="mt-2 bg-gray-50 rounded-xl px-4 py-3 text-sm text-gray-600 flex flex-wrap gap-x-4 gap-y-1">
           <span className="capitalize">{dateLabel}</span>
           <span>·</span>
           <span>{state.slotLabel}</span>
@@ -94,20 +94,19 @@ export function StepDetails({ initialData, state, onDone, onBack }: Props) {
         <Label htmlFor="email">Email *</Label>
         <Input id="email" type="email" {...register('email')} placeholder="marie@email.com" />
         {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
-        <p className="text-xs text-[#8B8080]">Confirmation de réservation envoyée ici.</p>
+        <p className="text-xs text-gray-400">Confirmation de réservation envoyée ici.</p>
       </div>
 
       <div className="space-y-1.5">
         <Label htmlFor="phone">Téléphone *</Label>
         <Input id="phone" type="tel" {...register('phone')} placeholder="+33 6 12 34 56 78" />
         {errors.phone && <p className="text-xs text-red-500">{errors.phone.message}</p>}
-        <p className="text-xs text-[#8B8080]">Utilisé uniquement pour vous contacter si besoin.</p>
+        <p className="text-xs text-gray-400">Utilisé uniquement pour vous contacter si besoin.</p>
       </div>
 
-      {/* Politique d'annulation */}
-      <div className="bg-[#FFF8F0] border border-[#E8DDD0] rounded-xl p-4 space-y-3">
-        <p className="text-sm font-semibold text-[#3D2B1F]">Politique d&apos;annulation</p>
-        <ul className="text-xs text-[#6B5344] space-y-1">
+      <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
+        <p className="text-sm font-semibold text-gray-900">Politique d&apos;annulation</p>
+        <ul className="text-xs text-gray-500 space-y-1">
           <li>✅ Annulation gratuite jusqu&apos;à 24h avant votre session</li>
           <li>❌ Annulation moins de 24h avant : 20 € prélevés</li>
         </ul>
@@ -115,9 +114,9 @@ export function StepDetails({ initialData, state, onDone, onBack }: Props) {
           <input
             type="checkbox"
             {...register('policy')}
-            className="mt-0.5 w-4 h-4 accent-[#C17F24]"
+            className="mt-0.5 w-4 h-4 accent-black"
           />
-          <span className="text-xs text-[#6B5344]">
+          <span className="text-xs text-gray-500">
             J&apos;ai lu et j&apos;accepte la politique d&apos;annulation.
           </span>
         </label>
@@ -133,7 +132,7 @@ export function StepDetails({ initialData, state, onDone, onBack }: Props) {
         <Button
           type="submit"
           disabled={loading}
-          className="flex-1 bg-[#C17F24] hover:bg-[#A66A1A]"
+          className="flex-1 bg-black hover:bg-gray-800"
         >
           {loading ? 'Réservation…' : 'Confirmer →'}
         </Button>

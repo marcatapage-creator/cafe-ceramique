@@ -3,6 +3,10 @@ import { NextResponse, type NextRequest } from 'next/server'
 import type { Database } from '@/types/database'
 
 export async function updateSession(request: NextRequest) {
+  if (process.env.NEXT_PUBLIC_MOCK === 'true') {
+    return NextResponse.next({ request })
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient<Database>(

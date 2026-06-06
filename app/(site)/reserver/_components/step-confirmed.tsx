@@ -13,41 +13,41 @@ export function StepConfirmed({ state }: { state: ReservationState }) {
       <div className="pt-4 text-6xl">🎉</div>
 
       <div>
-        <h2 className="text-2xl font-bold text-[#3D2B1F]">Réservation confirmée !</h2>
-        <p className="text-[#6B5344] text-sm mt-1">
+        <h2 className="text-2xl font-bold text-gray-900">Réservation confirmée !</h2>
+        <p className="text-gray-500 text-sm mt-1">
           À bientôt, {state.firstName} !
         </p>
       </div>
 
-      <div className="bg-white rounded-2xl divide-y divide-[#F5F0E8] text-left shadow-sm">
+      <div className="bg-white rounded-2xl border border-gray-100 divide-y divide-gray-100 text-left">
         <div className="px-5 py-4 flex justify-between items-center">
-          <span className="text-sm text-[#8B8080]">Date</span>
-          <span className="font-semibold text-[#3D2B1F] capitalize">{dateLabel}</span>
+          <span className="text-sm text-gray-400">Date</span>
+          <span className="font-semibold text-gray-900 capitalize">{dateLabel}</span>
         </div>
         <div className="px-5 py-4 flex justify-between items-center">
-          <span className="text-sm text-[#8B8080]">Heure</span>
-          <span className="font-semibold text-[#3D2B1F]">{state.slotLabel} · 2h30</span>
+          <span className="text-sm text-gray-400">Heure</span>
+          <span className="font-semibold text-gray-900">{state.slotLabel} · 2h30</span>
         </div>
         <div className="px-5 py-4 flex justify-between items-center">
-          <span className="text-sm text-[#8B8080]">Participants</span>
-          <span className="font-semibold text-[#3D2B1F]">
+          <span className="text-sm text-gray-400">Participants</span>
+          <span className="font-semibold text-gray-900">
             {state.nbParticipants} {state.nbParticipants > 1 ? 'personnes' : 'personne'}
           </span>
         </div>
         <div className="px-5 py-4 flex justify-between items-center">
-          <span className="text-sm text-[#8B8080]">Confirmation</span>
-          <span className="font-medium text-[#3D2B1F] text-sm">{state.email}</span>
+          <span className="text-sm text-gray-400">Confirmation</span>
+          <span className="font-medium text-gray-900 text-sm">{state.email}</span>
         </div>
       </div>
 
-      <div className="bg-[#F5F0E8] rounded-xl px-4 py-3 text-xs text-[#6B5344]">
+      <div className="bg-gray-50 rounded-xl px-4 py-3 text-xs text-gray-500">
         Un email de confirmation avec le lien d&apos;annulation vous a été envoyé.
         Annulation gratuite jusqu&apos;à 24h avant votre session.
       </div>
 
       <Link
         href="/"
-        className="block w-full border border-[#C17F24] text-[#C17F24] font-medium py-3 rounded-xl text-sm hover:bg-[#C17F24]/5 transition-colors"
+        className="block w-full border border-gray-900 text-gray-900 font-medium py-3 rounded-xl text-sm hover:bg-gray-50 transition-colors"
       >
         Retour à l&apos;accueil
       </Link>

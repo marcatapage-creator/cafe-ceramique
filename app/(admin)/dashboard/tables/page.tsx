@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import type { PhysicalTable } from '@/types/database'
 import { QrGeneratorClient } from './_components/qr-generator-client'
 import { AddParticipantButton } from './_components/add-participant-button'
 
@@ -16,8 +17,8 @@ export default async function TablesPage() {
     <div className="max-w-5xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#3D2B1F]">Configuration des tables</h1>
-          <p className="text-[#6B5344] text-sm mt-1">
+          <h1 className="text-2xl font-bold text-gray-900">Configuration des tables</h1>
+          <p className="text-gray-500 text-sm mt-1">
             {tables?.length ?? 0} tables actives · QR codes permanents
           </p>
         </div>
@@ -25,11 +26,11 @@ export default async function TablesPage() {
       </div>
 
       <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4">
-        {(tables ?? []).map(table => (
-          <div key={table.id} className="bg-white rounded-xl p-4 border border-[#E8DDD0] space-y-2">
-            <p className="font-semibold text-[#3D2B1F] text-sm">{table.label}</p>
-            <p className="text-xs text-[#8B8080]">{table.seats} places</p>
-            <p className="text-xs text-[#C17F24] font-mono">/table/{table.id}</p>
+        {(tables ?? []).map((table: PhysicalTable) => (
+          <div key={table.id} className="bg-white rounded-xl p-4 border border-gray-200 space-y-2">
+            <p className="font-semibold text-gray-900 text-sm">{table.label}</p>
+            <p className="text-xs text-gray-400">{table.seats} places</p>
+            <p className="text-xs text-gray-500 font-mono">/table/{table.id}</p>
             <AddParticipantButton tableId={table.id} tableLabel={table.label} />
           </div>
         ))}

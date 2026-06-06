@@ -24,22 +24,19 @@ export function StepSlots({ date, nbParticipants, onNext, onBack }: Props) {
 
   useEffect(() => {
     const supabase = createClient()
-    supabase
-      .rpc('get_available_slots', { p_date: date })
+    ;(supabase.rpc('get_available_slots', { p_date: date }) as Promise<{ data: AvailableSlot[] | null }>)
       .then(({ data }) => {
         setFetchState({
-          slots: (data as unknown as AvailableSlot[]) ?? [],
+          slots: data ?? [],
           loading: false,
           forDate: date,
         })
       })
   }, [date])
 
-  // Dériver loading et slots depuis fetchState (pas de setState synchrone dans l'effet)
   const loading = fetchState.loading || fetchState.forDate !== date
   const slots = fetchState.forDate === date ? fetchState.slots : []
 
-  // Invalider picked si le slot n'est plus disponible pour ce nombre de participants
   const validPicked = picked && slots.find(
     s => s.slot_start === picked.slot_start && s.available_seats >= nbParticipants
   ) ? picked : null
@@ -49,18 +46,18 @@ export function StepSlots({ date, nbParticipants, onNext, onBack }: Props) {
   return (
     <div className="px-6 space-y-6 pb-8">
       <div>
-        <h2 className="text-xl font-bold text-[#3D2B1F]">Choisissez un créneau</h2>
-        <p className="text-sm text-[#6B5344] mt-1 capitalize">{dateLabel}</p>
+        <h2 className="text-xl font-bold text-gray-900">Choisissez un créneau</h2>
+        <p className="text-sm text-gray-500 mt-1 capitalize">{dateLabel}</p>
       </div>
 
       {loading ? (
         <div className="grid grid-cols-3 gap-2">
           {Array.from({ length: 9 }).map((_, i) => (
-            <div key={i} className="h-16 rounded-xl bg-[#E8DDD0] animate-pulse" />
+            <div key={i} className="h-16 rounded-xl bg-gray-100 animate-pulse" />
           ))}
         </div>
       ) : slots.length === 0 ? (
-        <div className="text-center py-8 text-[#6B5344]">
+        <div className="text-center py-8 text-gray-500">
           <p className="text-4xl mb-2">😕</p>
           <p className="font-medium">Aucun créneau ce jour.</p>
         </div>
@@ -77,16 +74,16 @@ export function StepSlots({ date, nbParticipants, onNext, onBack }: Props) {
                 onClick={() => available && setPicked(slot)}
                 className={`rounded-xl py-3 px-2 flex flex-col items-center gap-1 border-2 transition-all ${
                   isSelected
-                    ? 'border-[#C17F24] bg-[#C17F24] text-white'
+                    ? 'border-black bg-black text-white'
                     : available
-                    ? 'border-[#E8DDD0] bg-white text-[#3D2B1F] hover:border-[#C17F24]/50'
-                    : 'border-transparent bg-[#F5F0E8] text-[#C8C0B8] cursor-not-allowed'
+                    ? 'border-gray-200 bg-white text-gray-900 hover:border-gray-400'
+                    : 'border-transparent bg-gray-50 text-gray-300 cursor-not-allowed'
                 }`}
               >
                 <span className="font-bold text-base">{slot.slot_time_label}</span>
                 <span className={`text-xs ${
                   isSelected ? 'text-white/80' :
-                  available   ? 'text-[#C17F24]' : 'text-[#C8C0B8]'
+                  available   ? 'text-gray-500' : 'text-gray-300'
                 }`}>
                   {available
                     ? `${slot.available_seats} place${slot.available_seats > 1 ? 's' : ''}`
@@ -105,7 +102,7 @@ export function StepSlots({ date, nbParticipants, onNext, onBack }: Props) {
           type="button"
           onClick={() => validPicked && onNext(validPicked.slot_start, validPicked.slot_time_label)}
           disabled={!validPicked}
-          className="flex-1 bg-[#C17F24] hover:bg-[#A66A1A]"
+          className="flex-1 bg-black hover:bg-gray-800"
         >
           Continuer →
         </Button>

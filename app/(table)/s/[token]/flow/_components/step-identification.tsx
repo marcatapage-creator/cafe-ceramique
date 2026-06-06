@@ -29,8 +29,8 @@ export function StepIdentification({ initialData, onNext }: Props) {
   return (
     <form onSubmit={handleSubmit(onNext)} className="p-6 space-y-6 max-w-sm mx-auto">
       <div>
-        <h2 className="text-xl font-bold text-[#3D2B1F]">Commençons par vous 👋</h2>
-        <p className="text-sm text-[#6B5344] mt-1">
+        <h2 className="text-xl font-bold text-gray-900">Commençons par vous</h2>
+        <p className="text-sm text-gray-500 mt-1">
           Ces infos servent uniquement à vous envoyer votre token céramique.
         </p>
       </div>
@@ -46,16 +46,16 @@ export function StepIdentification({ initialData, onNext }: Props) {
           <Label htmlFor="email">Email *</Label>
           <Input id="email" type="email" {...register('email')} placeholder="marie@email.com" />
           {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
-          <p className="text-xs text-[#8B8080]">Vous recevrez votre token de suivi céramique ici.</p>
+          <p className="text-xs text-gray-400">Vous recevrez votre token de suivi céramique ici.</p>
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="phone">Téléphone <span className="text-[#8B8080]">(optionnel)</span></Label>
+          <Label htmlFor="phone">Téléphone <span className="text-gray-400">(optionnel)</span></Label>
           <Input id="phone" type="tel" {...register('phone')} placeholder="+33 6 12 34 56 78" />
         </div>
       </div>
 
-      <Button type="submit" className="w-full bg-[#C17F24] hover:bg-[#A66A1A] py-4 text-base">
+      <Button type="submit" className="w-full bg-black hover:bg-gray-800 py-4 text-base">
         Choisir ma pièce →
       </Button>
     </form>

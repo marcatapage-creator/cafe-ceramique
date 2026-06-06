@@ -33,7 +33,7 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-6 space-y-4">
+    <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
       <div className="space-y-1.5">
         <Label htmlFor="email">Email</Label>
         <Input
@@ -62,7 +62,7 @@ export function LoginForm() {
       )}
       <Button
         type="submit"
-        className="w-full bg-[#C17F24] hover:bg-[#A66A1A]"
+        className="w-full bg-black hover:bg-gray-800"
         disabled={loading}
       >
         {loading ? 'Connexion…' : 'Se connecter'}
