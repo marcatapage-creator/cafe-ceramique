@@ -17,6 +17,8 @@ export class MockQueryBuilder {
   private _table: string
   private _filters: Filter[] = []
   private _limit: number | null = null
+  private _rangeFrom: number | null = null
+  private _rangeTo: number | null = null
   private _orderCol: string | null = null
   private _orderAsc: boolean = true
   private _isSingle = false
@@ -98,6 +100,12 @@ export class MockQueryBuilder {
 
   limit(n: number) {
     this._limit = n
+    return this
+  }
+
+  range(from: number, to: number) {
+    this._rangeFrom = from
+    this._rangeTo = to
     return this
   }
 
@@ -206,10 +214,16 @@ export class MockQueryBuilder {
       })
     }
 
-    if (this._limit !== null) rows = rows.slice(0, this._limit)
+    const totalCount = rows.length
+
+    if (this._rangeFrom !== null && this._rangeTo !== null) {
+      rows = rows.slice(this._rangeFrom, this._rangeTo + 1)
+    } else if (this._limit !== null) {
+      rows = rows.slice(0, this._limit)
+    }
 
     if (this._isCount && this._isHead) {
-      return { data: null, count: rows.length, error: null }
+      return { data: null, count: totalCount, error: null }
     }
 
     if (this._isSingle) {
