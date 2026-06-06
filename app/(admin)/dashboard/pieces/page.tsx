@@ -4,6 +4,8 @@ import { fr } from 'date-fns/locale'
 import type { CeramicPiece, Client, PieceStatus } from '@/types/database'
 import { PieceAdvanceButton } from './_components/piece-advance-button'
 
+const PAGE_SIZE = 20
+
 const STATUS_META: Record<PieceStatus, { label: string; icon: string; cls: string }> = {
   painted:   { label: 'Peinte',         icon: '🖌️', cls: 'bg-blue-50 text-blue-700 border-blue-200' },
   queued:    { label: 'File de cuisson', icon: '⏳', cls: 'bg-amber-50 text-amber-700 border-amber-200' },
@@ -18,13 +20,37 @@ type PieceWithClient = CeramicPiece & {
   client: Pick<Client, 'id' | 'first_name' | 'last_name'> | undefined
 }
 
-export default async function PiecesPage() {
+type Props = {
+  searchParams: Promise<{ status?: string; page?: string }>
+}
+
+export default async function PiecesPage({ searchParams }: Props) {
+  const params = await searchParams
+  const filterStatus = STATUS_ORDER.includes(params.status as PieceStatus)
+    ? (params.status as PieceStatus)
+    : null
+  const page = Math.max(1, parseInt(params.page ?? '1', 10))
+  const offset = (page - 1) * PAGE_SIZE
+
   const supabase = await createClient()
 
-  const [{ data: rawPieces }, { data: rawClients }] = await Promise.all([
-    supabase.from('ceramic_pieces').select('*').order('created_at'),
+  const [piecesResult, { data: rawClients }] = await Promise.all([
+    filterStatus
+      ? supabase
+          .from('ceramic_pieces')
+          .select('*', { count: 'exact' })
+          .eq('status', filterStatus)
+          .order('created_at')
+          .limit(PAGE_SIZE)
+      : supabase
+          .from('ceramic_pieces')
+          .select('*', { count: 'exact' })
+          .order('created_at')
+          .range(offset, offset + PAGE_SIZE - 1),
     supabase.from('clients').select('id, first_name, last_name'),
   ])
+
+  const { data: rawPieces, count: totalCount } = piecesResult
 
   const clientMap = new Map(
     (rawClients ?? []).map((c: Pick<Client, 'id' | 'first_name' | 'last_name'>) => [c.id, c])
@@ -35,33 +61,54 @@ export default async function PiecesPage() {
     client: clientMap.get(p.client_id) as PieceWithClient['client'],
   }))
 
+  const total = totalCount ?? pieces.length
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
+
   const byStatus = Object.fromEntries(
     STATUS_ORDER.map(s => [s, pieces.filter(p => p.status === s)])
   ) as Record<PieceStatus, PieceWithClient[]>
 
-  const activeStatuses = STATUS_ORDER.filter(s => s !== 'collected' || byStatus.collected.length > 0)
+  const activeStatuses = filterStatus
+    ? [filterStatus]
+    : STATUS_ORDER.filter(s => s !== 'collected' || byStatus.collected.length > 0)
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Pièces céramiques</h1>
+          <p className="text-gray-400 text-sm mt-0.5">
+            {pieces.filter(p => p.status !== 'collected').length} en cours
+            {total > PAGE_SIZE && ` · ${total} au total`}
+          </p>
+        </div>
 
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Pièces céramiques</h1>
-        <p className="text-gray-400 text-sm mt-0.5">{pieces.filter(p => p.status !== 'collected').length} pièce(s) en cours</p>
-      </div>
-
-      {/* Résumé rapide */}
-      <div className="flex gap-3 flex-wrap">
-        {STATUS_ORDER.map(s => {
-          const m = STATUS_META[s]
-          const count = byStatus[s].length
-          return (
-            <a key={s} href={`#${s}`} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-opacity ${m.cls} ${count === 0 ? 'opacity-40' : ''}`}>
-              <span>{m.icon}</span>
-              <span>{m.label}</span>
-              <span className="font-bold">{count}</span>
+        {/* Filtre statut */}
+        <div className="flex gap-2 flex-wrap">
+          <a
+            href="/dashboard/pieces"
+            className={`px-3 py-1.5 rounded-full border text-xs font-medium transition-colors ${
+              !filterStatus
+                ? 'bg-black text-white border-black'
+                : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400'
+            }`}
+          >
+            Tous
+          </a>
+          {STATUS_ORDER.map(s => (
+            <a
+              key={s}
+              href={`/dashboard/pieces?status=${s}`}
+              className={`px-3 py-1.5 rounded-full border text-xs font-medium transition-colors ${
+                filterStatus === s
+                  ? 'bg-black text-white border-black'
+                  : `${STATUS_META[s].cls} hover:opacity-80`
+              }`}
+            >
+              {STATUS_META[s].icon} {STATUS_META[s].label}
             </a>
-          )
-        })}
+          ))}
+        </div>
       </div>
 
       {/* Sections par statut */}
@@ -88,6 +135,23 @@ export default async function PiecesPage() {
           </section>
         )
       })}
+
+      {/* Pagination (mode vue globale uniquement) */}
+      {!filterStatus && totalPages > 1 && (
+        <div className="flex items-center justify-center gap-3 pt-2">
+          {page > 1 && (
+            <a href={`/dashboard/pieces?page=${page - 1}`} className="text-sm text-gray-500 hover:text-gray-900">
+              ← Précédent
+            </a>
+          )}
+          <span className="text-xs text-gray-400">Page {page} / {totalPages}</span>
+          {page < totalPages && (
+            <a href={`/dashboard/pieces?page=${page + 1}`} className="text-sm text-gray-500 hover:text-gray-900">
+              Suivant →
+            </a>
+          )}
+        </div>
+      )}
     </div>
   )
 }
@@ -103,7 +167,6 @@ function PieceRow({ piece, status }: { piece: PieceWithClient; status: PieceStat
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 px-4 py-3 flex items-center gap-4">
-      {/* Token */}
       <div className="min-w-0 flex-1">
         <p className="font-mono text-sm font-semibold text-gray-900">{piece.token}</p>
         <p className="text-xs text-gray-500 mt-0.5">
@@ -112,14 +175,12 @@ function PieceRow({ piece, status }: { piece: PieceWithClient; status: PieceStat
         </p>
       </div>
 
-      {/* Timestamp */}
       {timestampField && (
         <p className="text-xs text-gray-400 whitespace-nowrap hidden sm:block">
-          {format(parseISO(timestampField), "d MMM HH:mm", { locale: fr })}
+          {format(parseISO(timestampField), 'd MMM HH:mm', { locale: fr })}
         </p>
       )}
 
-      {/* Action */}
       <PieceAdvanceButton pieceId={piece.id} status={status} />
     </div>
   )

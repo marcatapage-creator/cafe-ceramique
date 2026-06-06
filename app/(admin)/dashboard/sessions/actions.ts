@@ -1,52 +1,59 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/auth/guard'
+import { OpenSessionSchema, CloseSessionSchema } from '@/lib/validation/schemas'
 import { revalidatePath } from 'next/cache'
 
 export async function openSession(tableIds: number[]) {
-  if (tableIds.length === 0) return { error: 'Sélectionnez au moins une table.' }
+  const user = await requireAdmin()
+  if (!user) return { error: 'Non autorisé.' }
+
+  const parsed = OpenSessionSchema.safeParse({ tableIds })
+  if (!parsed.success) return { error: parsed.error.issues[0].message }
 
   const supabase = await createClient()
 
-  // Vérifie qu'aucune table sélectionnée n'a déjà une session active
   const { data: existing } = await supabase
     .from('group_sessions')
     .select('id, group_session_tables(physical_table_id)')
     .eq('status', 'active')
 
   const occupiedIds = new Set<number>()
-  ;(existing ?? []).forEach((s: Record<string, unknown>) => {
-    const gst = s.group_session_tables as Array<{ physical_table_id: number }> | undefined
-    gst?.forEach(t => occupiedIds.add(t.physical_table_id))
+  ;(existing ?? []).forEach((s: { group_session_tables?: Array<{ physical_table_id: number }> }) => {
+    s.group_session_tables?.forEach(t => occupiedIds.add(t.physical_table_id))
   })
 
-  const conflict = tableIds.find(id => occupiedIds.has(id))
+  const conflict = parsed.data.tableIds.find(id => occupiedIds.has(id))
   if (conflict) {
     return { error: `La table T${String(conflict).padStart(2, '0')} a déjà une session active.` }
   }
 
   const now = new Date().toISOString()
-  const qrToken = `${tableIds.map(id => `t${id}`).join('-')}-${Date.now()}`
+  const qrToken = `${parsed.data.tableIds.map(id => `t${id}`).join('-')}-${Date.now()}`
 
-  // Crée la session
-  const { data: session, error: sessionErr } = await supabase
+  const { data: sessionData, error: sessionErr } = await supabase
     .from('group_sessions')
-    .insert({
-      qr_token:        qrToken,
-      starts_at:       now,
-      status:          'active',
-      nb_participants: 0,
-    })
-    .select()
+    .insert({ qr_token: qrToken, starts_at: now, status: 'active', nb_participants: 0 })
+    .select('id')
     .single()
 
-  if (sessionErr || !session) return { error: 'Erreur lors de la création de la session.' }
+  if (sessionErr || !sessionData) return { error: 'Erreur lors de la création de la session.' }
 
-  // Lie les tables
-  for (const tableId of tableIds) {
-    await supabase
-      .from('group_session_tables')
-      .insert({ group_session_id: (session as Record<string, unknown>).id as string, physical_table_id: tableId })
+  const session = sessionData as { id: string }
+
+  const tableInserts = await Promise.all(
+    parsed.data.tableIds.map(tableId =>
+      supabase
+        .from('group_session_tables')
+        .insert({ group_session_id: session.id, physical_table_id: tableId })
+    )
+  )
+
+  const failed = tableInserts.find(r => r.error)
+  if (failed) {
+    await supabase.from('group_sessions').delete().eq('id', session.id)
+    return { error: 'Erreur lors de la liaison des tables. Session annulée.' }
   }
 
   revalidatePath('/dashboard')
@@ -55,12 +62,18 @@ export async function openSession(tableIds: number[]) {
 }
 
 export async function closeSession(sessionId: string) {
+  const user = await requireAdmin()
+  if (!user) return { error: 'Non autorisé.' }
+
+  const parsed = CloseSessionSchema.safeParse({ sessionId })
+  if (!parsed.success) return { error: parsed.error.issues[0].message }
+
   const supabase = await createClient()
 
   const { error } = await supabase
     .from('group_sessions')
     .update({ status: 'closed', closed_at: new Date().toISOString() })
-    .eq('id', sessionId)
+    .eq('id', parsed.data.sessionId)
 
   if (error) return { error: 'Erreur lors de la clôture.' }
   revalidatePath('/dashboard')

@@ -41,8 +41,25 @@ describe('updateReservationStatus', () => {
     expect(revalidatePath).toHaveBeenCalledWith('/dashboard/reservations')
   })
 
-  it('returns success even when status is already that value', async () => {
-    const result = await updateReservationStatus('resa-001', 'confirmed')
-    expect(result).toEqual({ success: true })
+  // ── Validation (chemins d'erreur) ─────────────────────────────────────────
+
+  it('returns error when reservationId is empty', async () => {
+    const result = await updateReservationStatus('', 'confirmed')
+    expect(result).toHaveProperty('error')
+    expect(revalidatePath).not.toHaveBeenCalled()
+  })
+
+  it('returns error when status is invalid', async () => {
+    // @ts-expect-error -- valeur hors enum, test de validation runtime
+    const result = await updateReservationStatus('resa-001', 'invalid_status')
+    expect(result).toHaveProperty('error')
+    expect(revalidatePath).not.toHaveBeenCalled()
+  })
+
+  it('does not mutate reservation on validation failure', async () => {
+    // @ts-expect-error -- valeur hors enum, test de validation runtime
+    await updateReservationStatus('resa-001', 'bad_status')
+    const resa = (MOCK_STORE.reservations as Reservation[]).find(r => r.id === 'resa-001')!
+    expect(resa.status).toBe('confirmed')
   })
 })

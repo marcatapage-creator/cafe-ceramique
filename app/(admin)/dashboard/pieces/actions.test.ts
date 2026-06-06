@@ -9,14 +9,12 @@ vi.mock('@/lib/supabase/server', async () => {
   return { createClient: async () => createMockClient() }
 })
 
-// Import after mocks are set up
 const { advancePieceStatus } = await import('./actions')
 const { revalidatePath } = await import('next/cache')
 
 describe('advancePieceStatus', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    // Reset the painted piece to a known state
     const piece = (MOCK_STORE.ceramic_pieces as CeramicPiece[]).find(p => p.id === 'piece-001')!
     piece.status = 'painted'
     piece.queued_at = null
@@ -44,7 +42,7 @@ describe('advancePieceStatus', () => {
     expect(piece.fired_at).toBeTruthy()
   })
 
-  it('returns error when piece is already collected', async () => {
+  it('returns error when piece is already collected (final status)', async () => {
     const result = await advancePieceStatus('piece-001', 'collected')
     expect(result).toEqual({ error: 'Statut final — aucune transition possible.' })
   })
@@ -61,5 +59,27 @@ describe('advancePieceStatus', () => {
 
     await advancePieceStatus('piece-001', 'collected')
     expect(piece.status).toBe('collected')
+    expect(revalidatePath).not.toHaveBeenCalled()
+  })
+
+  // ── Validation (chemins d'erreur) ─────────────────────────────────────────
+
+  it('returns error when pieceId is empty string', async () => {
+    const result = await advancePieceStatus('', 'painted')
+    expect(result).toHaveProperty('error')
+    expect(revalidatePath).not.toHaveBeenCalled()
+  })
+
+  it('returns error when currentStatus is invalid', async () => {
+    // @ts-expect-error -- valeur hors enum, test de validation runtime
+    const result = await advancePieceStatus('piece-001', 'unknown_status')
+    expect(result).toHaveProperty('error')
+    expect(revalidatePath).not.toHaveBeenCalled()
+  })
+
+  it('does not call revalidatePath on validation failure', async () => {
+    // @ts-expect-error -- null interdit par le schema Zod
+    await advancePieceStatus(null, 'painted')
+    expect(revalidatePath).not.toHaveBeenCalled()
   })
 })
