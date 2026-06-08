@@ -1,16 +1,12 @@
-import { Geist_Mono } from "next/font/google"
-import localFont from "next/font/local"
+import { Asta_Sans, Geist_Mono } from "next/font/google"
 
 // ─── Police principale ────────────────────────────────────────────────────────
 // Pour changer la police de toute l'app : modifier uniquement ce bloc.
-// Remplacer localFont par un import Google Font si besoin :
-//   import { Inter } from "next/font/google"
-//   export const fontPrimary = Inter({ variable: "--font-primary", subsets: ["latin"] })
 
-export const fontPrimary = localFont({
-  src: "./fonts/cal-sans.woff2",
+export const fontPrimary = Asta_Sans({
   variable: "--font-primary",
-  weight: "400",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
 })
 
 // ─── Police monospace (tokens céramique, compteurs) ──────────────────────────
