@@ -16,6 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { CheckCircle } from 'iconoir-react'
 
 const schema = z.object({
   first_name: z.string().min(1, 'Prénom requis'),
@@ -137,7 +138,7 @@ export function AddParticipantButton({ tableId, tableLabel }: Props) {
 
         {generatedToken ? (
           <div className="space-y-4 text-center py-4">
-            <div className="text-4xl">✅</div>
+            <CheckCircle className="size-10 mx-auto" />
             <p className="text-gray-900 font-semibold">Token généré</p>
             <p className="text-2xl font-mono font-bold text-gray-900 bg-gray-50 py-3 rounded-lg">
               {generatedToken}

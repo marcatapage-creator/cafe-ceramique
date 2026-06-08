@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { CheckCircle, XmarkCircle } from 'iconoir-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { format, parseISO } from 'date-fns'
@@ -107,8 +108,8 @@ export function StepDetails({ initialData, state, onDone, onBack }: Props) {
       <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
         <p className="text-sm font-semibold text-gray-900">Politique d&apos;annulation</p>
         <ul className="text-xs text-gray-500 space-y-1">
-          <li>✅ Annulation gratuite jusqu&apos;à 24h avant votre session</li>
-          <li>❌ Annulation moins de 24h avant : 20 € prélevés</li>
+          <li className="flex items-center gap-1.5"><CheckCircle className="size-3 shrink-0" /> Annulation gratuite jusqu&apos;à 24h avant votre session</li>
+          <li className="flex items-center gap-1.5"><XmarkCircle className="size-3 shrink-0" /> Annulation moins de 24h avant : 20 € prélevés</li>
         </ul>
         <label className="flex items-start gap-3 cursor-pointer">
           <input

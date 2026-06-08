@@ -41,7 +41,7 @@ export function QrGeneratorClient({ tables, appUrl }: Props) {
               {table.label}
             </p>
             <p style={{ fontSize: 18, marginTop: 8, fontFamily: 'sans-serif', color: '#555' }}>
-              Scannez-moi 🎨
+              Scannez-moi
             </p>
           </div>
         ))}

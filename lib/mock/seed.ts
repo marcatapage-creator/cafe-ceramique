@@ -179,12 +179,39 @@ export const mockCatalogPieces: CatalogPiece[] = [
 
 // ── Menu items ───────────────────────────────────────────────────────────────
 export const mockMenuItems: MenuItem[] = [
-  { id: 'menu-001', name: 'Café expresso', category: 'boissons', price: 2.50, description: null, is_available: true, sort_order: 1, photo_url: null, created_at: NOW },
-  { id: 'menu-002', name: 'Café latte',    category: 'boissons', price: 4.00, description: null, is_available: true, sort_order: 2, photo_url: null, created_at: NOW },
-  { id: 'menu-003', name: 'Thé vert',      category: 'boissons', price: 3.50, description: null, is_available: true, sort_order: 3, photo_url: null, created_at: NOW },
-  { id: 'menu-004', name: 'Chocolat chaud',category: 'boissons', price: 4.50, description: null, is_available: true, sort_order: 4, photo_url: null, created_at: NOW },
-  { id: 'menu-005', name: 'Croissant',     category: 'patisseries', price: 2.50, description: null, is_available: true, sort_order: 5, photo_url: null, created_at: NOW },
-  { id: 'menu-006', name: 'Pain au choc.', category: 'patisseries', price: 2.50, description: null, is_available: true, sort_order: 6, photo_url: null, created_at: NOW },
+  // Café
+  { id: 'menu-c01', name: 'Espresso',          category: 'café',     price: 1.80, description: null, is_available: true, sort_order: 1,  photo_url: null, created_at: NOW },
+  { id: 'menu-c02', name: 'Allongé',           category: 'café',     price: 1.80, description: null, is_available: true, sort_order: 2,  photo_url: null, created_at: NOW },
+  { id: 'menu-c03', name: 'Double espresso',   category: 'café',     price: 2.50, description: null, is_available: true, sort_order: 3,  photo_url: null, created_at: NOW },
+  { id: 'menu-c04', name: 'Café latte',        category: 'café',     price: 4.00, description: null, is_available: true, sort_order: 4,  photo_url: null, created_at: NOW },
+  { id: 'menu-c05', name: 'Cappuccino',        category: 'café',     price: 4.00, description: 'Amande / lait', is_available: true, sort_order: 5, photo_url: null, created_at: NOW },
+  // Spécials
+  { id: 'menu-s01', name: 'Fresh Reveil',      category: 'spécials', price: 0,    description: 'Café latté froid — prix sur demande', is_available: true, sort_order: 10, photo_url: null, created_at: NOW },
+  // Not Café
+  { id: 'menu-n01', name: 'Chocolat chaud',    category: 'not café', price: 4.50, description: null, is_available: true, sort_order: 20, photo_url: null, created_at: NOW },
+  { id: 'menu-n02', name: 'Matcha Latte',      category: 'not café', price: 5.50, description: null, is_available: true, sort_order: 21, photo_url: null, created_at: NOW },
+  { id: 'menu-n03', name: 'Ube Latte',         category: 'not café', price: 5.50, description: null, is_available: true, sort_order: 22, photo_url: null, created_at: NOW },
+  { id: 'menu-n04', name: 'Thé',               category: 'not café', price: 4.50, description: null, is_available: true, sort_order: 23, photo_url: null, created_at: NOW },
+  // Froid
+  { id: 'menu-f01', name: 'Kombucha',          category: 'froid',    price: 5.00, description: null, is_available: true, sort_order: 30, photo_url: null, created_at: NOW },
+  { id: 'menu-f02', name: 'Sirop',             category: 'froid',    price: 2.50, description: null, is_available: true, sort_order: 31, photo_url: null, created_at: NOW },
+  { id: 'menu-f03', name: 'San Pellegrino',    category: 'froid',    price: 5.00, description: '50cl', is_available: true, sort_order: 32, photo_url: null, created_at: NOW },
+  { id: 'menu-f04', name: 'Jus de fruit',      category: 'froid',    price: 5.00, description: null, is_available: true, sort_order: 33, photo_url: null, created_at: NOW },
+  { id: 'menu-f05', name: 'Thé glacé',         category: 'froid',    price: 5.00, description: null, is_available: true, sort_order: 34, photo_url: null, created_at: NOW },
+  { id: 'menu-f06', name: 'Limonade',          category: 'froid',    price: 5.00, description: null, is_available: true, sort_order: 35, photo_url: null, created_at: NOW },
+  { id: 'menu-f07', name: 'Soda',              category: 'froid',    price: 4.00, description: 'Coca, Fuzztee, Sprite', is_available: true, sort_order: 36, photo_url: null, created_at: NOW },
+  { id: 'menu-f08', name: 'Ice café',          category: 'froid',    price: 5.00, description: null, is_available: true, sort_order: 37, photo_url: null, created_at: NOW },
+  // Salée
+  { id: 'menu-sa01', name: 'Charcuterie',      category: 'salée',    price: 14.00, description: 'Serrano, saucisson, pancetta', is_available: true, sort_order: 40, photo_url: null, created_at: NOW },
+  { id: 'menu-sa02', name: 'Fromage',          category: 'salée',    price: 12.00, description: 'Comté, chèvre, camembert', is_available: true, sort_order: 41, photo_url: null, created_at: NOW },
+  { id: 'menu-sa03', name: 'Houmous',          category: 'salée',    price: 8.00,  description: null, is_available: true, sort_order: 42, photo_url: null, created_at: NOW },
+  { id: 'menu-sa04', name: 'Tapenade (olive)', category: 'salée',    price: 7.00,  description: null, is_available: true, sort_order: 43, photo_url: null, created_at: NOW },
+  // Sucrée
+  { id: 'menu-su01', name: 'Cookie Matcha',        category: 'sucrée', price: 4.00, description: null, is_available: true, sort_order: 50, photo_url: null, created_at: NOW },
+  { id: 'menu-su02', name: 'Cookie classique',     category: 'sucrée', price: 4.00, description: null, is_available: true, sort_order: 51, photo_url: null, created_at: NOW },
+  { id: 'menu-su03', name: 'Cookie sésame noir',   category: 'sucrée', price: 4.50, description: null, is_available: true, sort_order: 52, photo_url: null, created_at: NOW },
+  { id: 'menu-su04', name: 'Cake marbré',          category: 'sucrée', price: 5.50, description: null, is_available: true, sort_order: 53, photo_url: null, created_at: NOW },
+  { id: 'menu-su05', name: 'Cake chiffon pandan',  category: 'sucrée', price: 3.50, description: null, is_available: true, sort_order: 54, photo_url: null, created_at: NOW },
 ]
 
 // ── Opening hours ────────────────────────────────────────────────────────────

@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import Link from 'next/link'
+import { Palette } from 'iconoir-react'
 import type { FlowData } from './flow-wizard'
 
 interface Props {
@@ -22,7 +23,7 @@ export function StepDone({ token, data, tableLabel }: Props) {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-sm text-center space-y-6">
-        <div className="text-6xl">🎨</div>
+        <div className="flex justify-center"><Palette className="size-12" /></div>
 
         <div>
           <h1 className="text-2xl font-bold text-gray-900">

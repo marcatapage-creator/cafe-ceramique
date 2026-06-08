@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { Palette, Hourglass, FireFlame, Sparks, Home, Check } from 'iconoir-react'
 
 type PieceStatus = 'painted' | 'queued' | 'firing' | 'ready' | 'collected'
 
@@ -21,13 +22,13 @@ const STEPS: Array<{
   key: PieceStatus
   label: string
   desc: string
-  icon: string
+  icon: React.ReactNode
 }> = [
-  { key: 'painted',   label: 'Déposée',     desc: 'Votre pièce est prête pour la cuisson.', icon: '🎨' },
-  { key: 'queued',    label: 'En attente',   desc: 'En file d\'attente pour le prochain four.', icon: '📋' },
-  { key: 'firing',    label: 'En cuisson',   desc: 'Votre pièce est dans le four !', icon: '🔥' },
-  { key: 'ready',     label: 'Prête !',      desc: 'Votre pièce est cuite. Venez la récupérer.', icon: '✨' },
-  { key: 'collected', label: 'Récupérée',    desc: 'Pièce récupérée. Merci de votre visite !', icon: '🏡' },
+  { key: 'painted',   label: 'Déposée',     desc: 'Votre pièce est prête pour la cuisson.',         icon: <Palette className="size-4" /> },
+  { key: 'queued',    label: 'En attente',   desc: 'En file d\'attente pour le prochain four.',      icon: <Hourglass className="size-4" /> },
+  { key: 'firing',    label: 'En cuisson',   desc: 'Votre pièce est dans le four !',                 icon: <FireFlame className="size-4" /> },
+  { key: 'ready',     label: 'Prête !',      desc: 'Votre pièce est cuite. Venez la récupérer.',    icon: <Sparks className="size-4" /> },
+  { key: 'collected', label: 'Récupérée',    desc: 'Pièce récupérée. Merci de votre visite !',      icon: <Home className="size-4" /> },
 ]
 
 const STATUS_INDEX: Record<PieceStatus, number> = {
@@ -79,7 +80,7 @@ export function PieceTracker({ piece, token }: Props) {
             ? 'bg-gray-50 border-2 border-gray-300'
             : 'bg-white border border-gray-200'
         }`}>
-          <div className="text-5xl">{currentStep.icon}</div>
+          <div className="flex justify-center [&>svg]:size-12">{currentStep.icon}</div>
           <p className="font-bold text-xl text-gray-900">{currentStep.label}</p>
           <p className="text-sm text-gray-500">{currentStep.desc}</p>
           {piece.status === 'ready' && (
@@ -107,7 +108,7 @@ export function PieceTracker({ piece, token }: Props) {
                     active ? 'border-black text-black' :
                              'border-gray-200 text-gray-300'
                   }`}>
-                    {done ? '✓' : step.icon}
+                    {done ? <Check className="size-3" /> : step.icon}
                   </div>
                   <p className={`text-[10px] text-center leading-tight max-w-13 ${
                     active ? 'font-semibold text-black' :

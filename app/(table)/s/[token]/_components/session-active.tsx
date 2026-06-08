@@ -10,12 +10,12 @@ interface Props {
 }
 
 export function SessionActive({ session, tables }: Props) {
-  const endsAt = new Date(session.ends_at!)
+  const endsAt = session.ends_at ? new Date(session.ends_at) : null
   const tableLabel = tables.map(t => t.label).join(' + ') || 'Table'
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <SessionTimer endsAt={endsAt} />
+      {endsAt !== null && <SessionTimer endsAt={endsAt} />}
       <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-6">
         <div className="text-center">
           <p className="text-sm text-gray-500 font-medium uppercase tracking-widest mb-1">

@@ -1,17 +1,19 @@
+import React from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { format, parseISO } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import type { CeramicPiece, Client, PieceStatus } from '@/types/database'
 import { PieceAdvanceButton } from './_components/piece-advance-button'
+import { DesignPencil, Hourglass, FireFlame, Sparks, Home } from 'iconoir-react'
 
 const PAGE_SIZE = 20
 
-const STATUS_META: Record<PieceStatus, { label: string; icon: string; cls: string }> = {
-  painted:   { label: 'Peinte',         icon: '🖌️', cls: 'bg-blue-50 text-blue-700 border-blue-200' },
-  queued:    { label: 'File de cuisson', icon: '⏳', cls: 'bg-amber-50 text-amber-700 border-amber-200' },
-  firing:    { label: 'En cuisson',      icon: '🔥', cls: 'bg-orange-50 text-orange-700 border-orange-200' },
-  ready:     { label: 'Prête',           icon: '✅', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  collected: { label: 'Récupérée',       icon: '🎁', cls: 'bg-gray-50 text-gray-400 border-gray-100' },
+const STATUS_META: Record<PieceStatus, { label: string; icon: React.ReactNode; cls: string }> = {
+  painted:   { label: 'Peinte',         icon: <DesignPencil className="size-3.5" />, cls: 'bg-blue-50 text-blue-700 border-blue-200' },
+  queued:    { label: 'File de cuisson', icon: <Hourglass className="size-3.5" />,   cls: 'bg-amber-50 text-amber-700 border-amber-200' },
+  firing:    { label: 'En cuisson',      icon: <FireFlame className="size-3.5" />,   cls: 'bg-orange-50 text-orange-700 border-orange-200' },
+  ready:     { label: 'Prête',           icon: <Sparks className="size-3.5" />,      cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  collected: { label: 'Récupérée',       icon: <Home className="size-3.5" />,        cls: 'bg-gray-50 text-gray-400 border-gray-100' },
 }
 
 const STATUS_ORDER: PieceStatus[] = ['painted', 'queued', 'firing', 'ready', 'collected']
@@ -105,7 +107,7 @@ export default async function PiecesPage({ searchParams }: Props) {
                   : `${STATUS_META[s].cls} hover:opacity-80`
               }`}
             >
-              {STATUS_META[s].icon} {STATUS_META[s].label}
+              <span className="flex items-center gap-1">{STATUS_META[s].icon} {STATUS_META[s].label}</span>
             </a>
           ))}
         </div>
@@ -118,7 +120,7 @@ export default async function PiecesPage({ searchParams }: Props) {
         return (
           <section key={status} id={status} className="space-y-3">
             <div className="flex items-center gap-2">
-              <span>{m.icon}</span>
+              <span className="flex items-center">{m.icon}</span>
               <h2 className="font-semibold text-gray-900">{m.label}</h2>
               <span className="text-sm text-gray-400">({list.length})</span>
             </div>

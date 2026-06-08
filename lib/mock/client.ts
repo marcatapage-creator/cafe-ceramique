@@ -63,7 +63,7 @@ function mockRpc(name: string, args?: Record<string, unknown>): { data: unknown;
         found:   true,
         expired: isExpired,
         session,
-        tables: session.group_session_tables.map(t => ({
+        tables: (session.group_session_tables ?? []).map(t => ({
           id:     t.physical_table_id,
           label:  `T${String(t.physical_table_id).padStart(2, '0')}`,
           seats:  2,

@@ -1,8 +1,10 @@
+import React from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { format, parseISO } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import type { Reservation, Client } from '@/types/database'
 import Link from 'next/link'
+import { Palette, DesignPencil, CheckCircle, Calendar } from 'iconoir-react'
 
 const STATUS_RESA: Record<string, { label: string; cls: string }> = {
   confirmed: { label: 'Confirmée', cls: 'bg-emerald-100 text-emerald-700' },
@@ -62,10 +64,10 @@ export default async function DashboardPage() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Sessions actives"    value={activeSessions?.length ?? 0} icon="🎨" href="/dashboard" />
-        <StatCard label="Pièces peintes"       value={paintedCount ?? 0}           icon="🖌️" href="/dashboard/pieces?status=painted" />
-        <StatCard label="Prêtes à récupérer"  value={readyCount ?? 0}             icon="✅" href="/dashboard/pieces?status=ready" accent />
-        <StatCard label="Réservations / jour" value={todayResasWithClient.length}  icon="📅" href="/dashboard/reservations" />
+        <StatCard label="Sessions actives"    value={activeSessions?.length ?? 0} icon={<Palette />} href="/dashboard" />
+        <StatCard label="Pièces peintes"       value={paintedCount ?? 0}           icon={<DesignPencil />} href="/dashboard/pieces?status=painted" />
+        <StatCard label="Prêtes à récupérer"  value={readyCount ?? 0}             icon={<CheckCircle />} href="/dashboard/pieces?status=ready" accent />
+        <StatCard label="Réservations / jour" value={todayResasWithClient.length}  icon={<Calendar />} href="/dashboard/reservations" />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
@@ -156,13 +158,13 @@ export default async function DashboardPage() {
 function StatCard({
   label, value, icon, href, accent,
 }: {
-  label: string; value: number; icon: string; href: string; accent?: boolean
+  label: string; value: number; icon: React.ReactNode; href: string; accent?: boolean
 }) {
   return (
     <Link href={href} className={`block rounded-2xl border p-4 hover:shadow-sm transition-shadow ${
       accent ? 'bg-black border-black text-white' : 'bg-white border-gray-200'
     }`}>
-      <p className="text-2xl">{icon}</p>
+      <div className={`size-6 ${accent ? 'text-white' : 'text-gray-500'}`}>{icon}</div>
       <p className={`text-3xl font-bold mt-2 ${accent ? 'text-white' : 'text-gray-900'}`}>{value}</p>
       <p className={`text-xs mt-1 ${accent ? 'text-white/70' : 'text-gray-400'}`}>{label}</p>
     </Link>
