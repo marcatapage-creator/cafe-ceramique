@@ -10,7 +10,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="border-b border-gray-200 bg-white px-6 py-3 flex items-center gap-6">
-        <span className="font-black italic text-gray-900 text-lg tracking-tight">mimo</span>
+        <span className="font-black italic text-gray-900 text-[1.4rem] tracking-tight">mimo</span>
         <a href="/dashboard" className="text-sm text-gray-500 hover:text-gray-900">Dashboard</a>
         <a href="/dashboard/reservations" className="text-sm text-gray-500 hover:text-gray-900">Réservations</a>
         <a href="/dashboard/pieces" className="text-sm text-gray-500 hover:text-gray-900">Pièces</a>
