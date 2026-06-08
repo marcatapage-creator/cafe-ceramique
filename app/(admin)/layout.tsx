@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -17,7 +18,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <a href="/dashboard/sessions" className="text-sm text-gray-500 hover:text-gray-900">Sessions</a>
         <a href="/dashboard/commandes" className="text-sm text-gray-500 hover:text-gray-900">Commandes</a>
         <a href="/dashboard/tables" className="text-sm text-gray-500 hover:text-gray-900">Tables</a>
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-2">
+          <ThemeToggle />
           <form action="/api/auth/signout" method="POST">
             <button type="submit" className="text-sm text-gray-400 hover:text-gray-900">
               Déconnexion

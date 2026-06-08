@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { fontClassNames } from "./fonts";
+import { Providers } from "./providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,8 +17,11 @@ export default function RootLayout({
     <html
       lang="fr"
       className={`${fontClassNames} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
