@@ -27,5 +27,5 @@ export default async function SessionPage({ params }: PageProps) {
 
 export async function generateMetadata({ params }: PageProps) {
   const { token } = await params
-  return { title: `Session — Café Céramique`, description: `Session ${token.slice(0, 8)}` }
+  return { title: `Session — mimo`, description: `Session ${token.slice(0, 8)}` }
 }

@@ -58,7 +58,7 @@ export function PieceTracker({ piece, token }: Props) {
 
         <div className="text-center space-y-1">
           <p className="text-sm text-gray-500 font-medium uppercase tracking-widest">
-            Café Céramique
+            mimo
           </p>
           <h1 className="text-2xl font-bold text-gray-900">
             Bonjour {piece.client_first_name} !

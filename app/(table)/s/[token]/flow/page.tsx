@@ -34,5 +34,5 @@ export default async function FlowPage({ params }: PageProps) {
 }
 
 export async function generateMetadata() {
-  return { title: 'Ma session — Café Céramique' }
+  return { title: 'Ma session — mimo' }
 }

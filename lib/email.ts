@@ -48,7 +48,7 @@ export function buildReservationEmail(opts: {
     subject: `✅ Réservation confirmée — ${opts.date} à ${opts.time}`,
     html: `
 <!DOCTYPE html><html lang="fr"><body style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;color:#3D2B1F;background:#FAF7F2">
-<h1 style="color:#C17F24;margin-bottom:4px">☕ Café Céramique</h1>
+<h1 style="color:#C17F24;margin-bottom:4px">☕ mimo</h1>
 <p style="color:#6B5344;margin-top:0">Réservation confirmée</p>
 <hr style="border:none;border-top:1px solid #E8DDD0;margin:20px 0">
 <p>Bonjour <strong>${opts.firstName}</strong>,</p>
@@ -67,7 +67,7 @@ export function buildReservationEmail(opts: {
   <a href="${cancelUrl}" style="color:#C17F24;font-size:13px">Annuler ma réservation</a>
 </p>
 <hr style="border:none;border-top:1px solid #E8DDD0;margin:20px 0">
-<p style="font-size:12px;color:#8B8080;text-align:center">Café Céramique · À bientôt !</p>
+<p style="font-size:12px;color:#8B8080;text-align:center">mimo · À bientôt !</p>
 </body></html>`,
   }
 }
@@ -83,7 +83,7 @@ export function buildTokenEmail(opts: {
     subject: `🏺 Votre token céramique : ${opts.token}`,
     html: `
 <!DOCTYPE html><html lang="fr"><body style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;color:#3D2B1F;background:#FAF7F2">
-<h1 style="color:#C17F24;margin-bottom:4px">☕ Café Céramique</h1>
+<h1 style="color:#C17F24;margin-bottom:4px">☕ mimo</h1>
 <p style="color:#6B5344;margin-top:0">Votre session est lancée !</p>
 <hr style="border:none;border-top:1px solid #E8DDD0;margin:20px 0">
 <p>Bonjour <strong>${opts.firstName}</strong>,</p>

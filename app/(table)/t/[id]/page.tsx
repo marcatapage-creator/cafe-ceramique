@@ -51,5 +51,5 @@ export default async function TableRedirectPage({ params }: PageProps) {
 
 export async function generateMetadata({ params }: PageProps) {
   const { id } = await params
-  return { title: `Table ${id} — Café Céramique` }
+  return { title: `Table ${id} — mimo` }
 }

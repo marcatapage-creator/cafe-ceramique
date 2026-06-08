@@ -10,7 +10,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps) {
   const { token } = await params
   return {
-    title: `Suivi pièce ${token} — Café Céramique`,
+    title: `Suivi pièce ${token} — mimo`,
     description: 'Suivez l\'état de cuisson de votre pièce céramique.',
   }
 }

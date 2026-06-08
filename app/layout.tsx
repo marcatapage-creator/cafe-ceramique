@@ -3,7 +3,7 @@ import { fontClassNames } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Café Céramique",
+  title: "mimo",
   description: "Peinture sur céramique — réservez votre session",
 };
 

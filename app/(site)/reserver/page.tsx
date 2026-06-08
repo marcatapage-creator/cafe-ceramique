@@ -3,7 +3,7 @@ import { ReservationWizard } from './_components/reservation-wizard'
 import type { OpeningHours } from '@/types/database'
 
 export const metadata = {
-  title: 'Réserver — Café Céramique',
+  title: 'Réserver — mimo',
   description: 'Réservez votre session de peinture sur céramique en quelques secondes.',
 }
 
